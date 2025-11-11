@@ -59,8 +59,8 @@ func startConsumer(ctx context.Context) {
 		log.Fatalln(err.Error())
 	}
 	cc, err := cs.Consume(func(msg jetstream.Msg) {
-		log.Println("consumer headers:", msg.Headers())
-		carrier := propagation.HeaderCarrier(msg.Headers())
+		header := msg.Headers()
+		carrier := propagation.HeaderCarrier(header)
 		ctx := inOtel.GetTextMapPropagator().Extract(context.Background(), carrier)
 
 		ctx, span := otel.Tracer("consumer").Start(ctx, "received message")

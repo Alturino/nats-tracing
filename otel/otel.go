@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"go.opentelemetry.io/contrib/propagators/jaeger"
+	"go.opentelemetry.io/contrib/propagators/opencensus"
+	"go.opentelemetry.io/contrib/propagators/ot"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
@@ -73,6 +76,9 @@ func ShutdownOtel(ctx context.Context, shutdownFuncs []ShutdownFunc) error {
 func GetTextMapPropagator() propagation.TextMapPropagator {
 	propagator := propagation.NewCompositeTextMapPropagator(
 		propagation.TraceContext{},
+		jaeger.Jaeger{},
+		ot.OT{},
+		opencensus.Binary{},
 		propagation.Baggage{},
 	)
 	return propagator

@@ -66,15 +66,15 @@ func startPublisher(ctx context.Context) {
 
 		log.Println("publisher started")
 		for range time.Tick(time.Second * 5) {
-			timeToPublish(ctx, js)
+			timeToPublish(js)
 		}
 	}(ctx)
 
 	<-ctx.Done()
 }
 
-func timeToPublish(ctx context.Context, js jetstream.JetStream) {
-	ctx, span := otel.Tracer("publisher").Start(ctx, "timeToPublish")
+func timeToPublish(js jetstream.JetStream) {
+	ctx, span := otel.Tracer("publisher").Start(context.Background(), "timeToPublish")
 	defer span.End()
 
 	publish(ctx, js)
