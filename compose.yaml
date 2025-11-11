@@ -1,0 +1,26 @@
+include:
+  - ./compose-observability.yaml
+services:
+  nats:
+    image: nats:2.11-alpine
+    ports:
+      - 4222:4222
+      - 6222:6222
+      - 8222:8222
+    command: ["-js", "-m", "8222"]
+    volumes:
+      - nats:/tmp/
+  consumer:
+    build: .
+    command: ["./nats_tracing", "consumer"]
+    depends_on:
+      nats:
+        condition: service_started
+  publisher:
+    build: .
+    command: ["./nats_tracing", "publisher"]
+    depends_on:
+      nats:
+        condition: service_started
+volumes:
+  nats:
